@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DHI 2025 Winter Break Vocabulary Test</title>
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+      /* 기본 스타일 */
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      }
+      .korean-text {
+          font-family: 'Noto Sans KR', sans-serif;
+      }
+      body {
+          background: #f3f4f6;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+      }
+      .container {
+          max-width: 800px;
+          width: 100%;
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          padding: 2rem;
+          margin: 20px auto;
+      }
+      .header {
+          text-align: center;
+          margin-bottom: 2rem;
+          padding-bottom: 1rem;
+          border-bottom: 2px solid #f3f4f6;
+      }
+      .title {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #1f2937;
+          margin-bottom: 0.5rem;
+      }
+      .subtitle {
+          font-size: 1.25rem;
+          color: #4b5563;
+          margin-bottom: 1rem;
+      }
+      .progress-container {
+          margin-bottom: 2rem;
+      }
+      .progress-bar {
+          width: 100%;
+          height: 8px;
+          background: #e5e7eb;
+          border-radius: 4px;
+          overflow: hidden;
+      }
+      .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #3b82f6, #2563eb);
+          transition: width 0.3s ease;
+      }
+      .word-container {
+          background: #f8fafc;
+          padding: 1.5rem;
+          border-radius: 12px;
+          margin-bottom: 1.5rem;
+          text-align: center;
+      }
+      .options-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+      }
+      .option-button {
+          padding: 1rem;
+          font-size: 1.125rem;
+          border: 2px solid #e5e7eb;
+          border-radius: 8px;
+          background: white;
+          color: #1f2937;
+          cursor: pointer;
+          transition: all 0.2s ease;
+      }
+      .option-button:hover {
+          background: #f3f4f6;
+          border-color: #d1d5db;
+      }
+      .feedback {
+          padding: 1rem;
+          border-radius: 8px;
+          margin-bottom: 1.5rem;
+          text-align: center;
+      }
+      .feedback.correct {
+          background: #dcfce7;
+          color: #166534;
+      }
+      .feedback.incorrect {
+          background: #fee2e2;
+          color: #991b1b;
+      }
+      .certificate {
+          text-align: center;
+          padding: 2rem;
+      }
+      .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1rem;
+          margin: 2rem 0;
+      }
+      .stat-card {
+          background: #f8fafc;
+          padding: 1rem;
+          border-radius: 8px;
+          text-align: center;
+      }
+      form {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-top: 1rem;
+      }
+      input {
+          padding: 0.75rem;
+          border: 2px solid #e5e7eb;
+          border-radius: 8px;
+          font-size: 1rem;
+      }
+      button {
+          padding: 0.75rem;
+          background: #3b82f6;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: background 0.2s ease;
+      }
+      button:hover {
+          background: #2563eb;
+      }
+      .streak-container {
+          text-align: center;
+          padding: 1rem;
+          margin-bottom: 1rem;
+      }
+      .streak-flames {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+          margin-bottom: 0.5rem;
+      }
+      .streak-number {
+          font-size: 2rem;
+          font-weight: bold;
+          color: #ff4d4d;
+          text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+          animation: pulse 1s infinite;
+      }
+      .streak-label {
+          font-size: 1rem;
+          color: #666;
+          margin-top: 0.5rem;
+      }
+      .streak-milestone {
+          color: #ff4d4d;
+          font-size: 1.2rem;
+          font-weight: bold;
+          margin-top: 0.5rem;
+          animation: popIn 0.5s ease-out;
+      }
+      .retry-button {
+          margin-top: 2rem;
+          padding: 1rem 2rem;
+          background: #3b82f6;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 1.1rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          animation: pulse 2s infinite;
+      }
+      .retry-button:hover {
+          background: #2563eb;
+          transform: scale(1.05);
+      }
+      @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+      }
+      @keyframes popIn {
+          0% { transform: scale(0); }
+          80% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+      }
+      @media (max-width: 640px) {
+          .options-grid {
+              grid-template-columns: repeat(2, 1fr);
+          }
+          .stats-grid {
+              grid-template-columns: 1fr;
+          }
+      }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // 배열 섞기 유틸리티 함수
+    const shuffleArray = (array) => {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      return newArray;
+    };
+
+    // 스트릭(연속 정답) 표시 컴포넌트
+    const StreakDisplay = ({ streak }) => {
+      const getStreakMessage = (streak) => {
+          if (streak >= 20) return "UNSTOPPABLE! 🏆";
+          if (streak >= 15) return "LEGENDARY! ⭐";
+          if (streak >= 10) return "AWESOME! 🌟";
+          if (streak >= 5) return "GREAT! 🎯";
+          if (streak >= 3) return "NICE! 👍";
+          return "";
+      };
+
+      return streak > 0 ? (
+          <div className="streak-container">
+              <div className="streak-flames">
+                  {Array(Math.min(Math.floor(streak / 5), 5)).fill('🔥').map((flame, index) => (
+                      <span 
+                          key={index} 
+                          style={{ 
+                              fontSize: `${Math.min(30 + streak * 2, 60)}px`,
+                              transform: `scale(${1 + Math.min(streak * 0.02, 0.5)})`,
+                              display: 'inline-block'
+                          }}
+                      >
+                          {flame}
+                      </span>
+                  ))}
+              </div>
+              <div className="streak-number">{streak}</div>
+              <div className="streak-label">Current Streak</div>
+              {streak >= 3 && (
+                  <div className="streak-milestone">
+                      {getStreakMessage(streak)}
+                  </div>
+              )}
+          </div>
+      ) : null;
+    };
+
+   // Initialize the full vocabulary list
+const fullVocabList = [
+{ korean: 'unguarded moments', english: '보호받지 못하는 상태', attempts: 0, wrongAttempts: 0 },
+{ korean: 'lens', english: '렌즈', attempts: 0, wrongAttempts: 0 },
+{ korean: 'Big Brother', english: '빅브라더', attempts: 0, wrongAttempts: 0 },
+{ korean: 'numb', english: '멍하게 만들다, 감각이 없게 만들다', attempts: 0, wrongAttempts: 0 },
+{ korean: '', english: '', attempts: 0, wrongAttempts: 0 },
+{ korean: 'hail', english: '우박', attempts: 0, wrongAttempts: 0 },
+{ korean: 'mule', english: '노새', attempts: 0, wrongAttempts: 0 },
+{ korean: 'moped', english: '모페드(모터달린 자전거', attempts: 0, wrongAttempts: 0 },
+{ korean: '', english: '', attempts: 0, wrongAttempts: 0 },
+{ korean: 'drenched', english: '흠뻑 젖은', attempts: 0, wrongAttempts: 0 },
+{ korean: 'amber', english: '', attempts: 0, wrongAttempts: 0 },
+{ korean: 'pragmatism', english: '실용주의', attempts: 0, wrongAttempts: 0 },
+{ korean: 'utility', english: '유용성', attempts: 0, wrongAttempts: 0 },
+{ korean: 'termites', english: '흰개미', attempts: 0, wrongAttempts: 0 },
+{ korean: 'proboscis', english: '주둥이', attempts: 0, wrongAttempts: 0 },
+{ korean: 'surveillance', english: '감시', attempts: 0, wrongAttempts: 0 },
+{ korean: 'replicate', english: '모사하다', attempts: 0, wrongAttempts: 0 },
+{ korean: 'controversy', english: '논란', attempts: 0, wrongAttempts: 0 },
+{ korean: 'democracy', english: '민주주의', attempts: 0, wrongAttempts: 0 },
+{ korean: 'dramatic', english: '극적인', attempts: 0, wrongAttempts: 0 },
+{ korean: 'embrace', english: '수용하다', attempts: 0, wrongAttempts: 0 },
+{ korean: 'instantly', english: '즉각', attempts: 0, wrongAttempts: 0 },
+"{ korean: 'obsess
+(obsessed)', english: '집착하다', attempts: 0, wrongAttempts: 0 },"
+"{ korean: 'profound', english: '엄청난
+심오한', attempts: 0, wrongAttempts: 0 },"
+"{ korean: 'relevant', english: '관련 있는
+적절한', attempts: 0, wrongAttempts: 0 },"
+{ korean: 'represent', english: '나타내다', attempts: 0, wrongAttempts: 0 },
+{ korean: 'tremendous', english: '엄청난', attempts: 0, wrongAttempts: 0 },
+"{ korean: 'enrich', english: '질을 높이다
+풍요롭게 하다', attempts: 0, wrongAttempts: 0 },"
+"{ korean: 'expectation', english: '기대
+예상', attempts: 0, wrongAttempts: 0 },"
+{ korean: 'overcome', english: '극복하다', attempts: 0, wrongAttempts: 0 },
+"{ korean: 'portrait', english: '초상화
+인물사진', attempts: 0, wrongAttempts: 0 },"
+{ korean: 'project', english: '보여주다', attempts: 0, wrongAttempts: 0 },
+{ korean: 'sincere', english: '진실된, 진정한', attempts: 0, wrongAttempts: 0 },
+{ korean: 'teamwork', english: '협동정신', attempts: 0, wrongAttempts: 0 },
+{ korean: 'thus', english: '이와 같이', attempts: 0, wrongAttempts: 0 },
+{ korean: 'tuition', english: '등록금', attempts: 0, wrongAttempts: 0 },
+"{ korean: 'turn out', english: '판명되다
+드러내다', attempts: 0, wrongAttempts: 0 },"
+{ korean: 'biological', english: '생물학의', attempts: 0, wrongAttempts: 0 },
+{ korean: 'device', english: '장치, 기구', attempts: 0, wrongAttempts: 0 },
+{ korean: 'fund', english: '자금[기금]을 대다', attempts: 0, wrongAttempts: 0 },
+{ korean: 'gap', english: '틈', attempts: 0, wrongAttempts: 0 },
+{ korean: 'gradually', english: '서서히', attempts: 0, wrongAttempts: 0 },
+{ korean: 'insight', english: '통찰력', attempts: 0, wrongAttempts: 0 },
+{ korean: 'nonetheless', english: '그렇기는 하지만', attempts: 0, wrongAttempts: 0 },
+{ korean: 'phase', english: '단계', attempts: 0, wrongAttempts: 0 },
+{ korean: 'vertical', english: '수직의, 세로의', attempts: 0, wrongAttempts: 0 },
+{ korean: 'vital', english: '필수적인', attempts: 0, wrongAttempts: 0 },
+];
+
+    // 메인 퀴즈 컴포넌트
+    const VocabTest = () => {
+      const [studentInfo, setStudentInfo] = React.useState({ name: '', message: '' });
+      const [isStarted, setIsStarted] = React.useState(false);
+      const [vocabList, setVocabList] = React.useState([]);
+      const [currentWordIndex, setCurrentWordIndex] = React.useState(0);
+      const [options, setOptions] = React.useState([]);
+      const [isComplete, setIsComplete] = React.useState(false);
+      const [feedback, setFeedback] = React.useState(null);
+      const [totalProgress, setTotalProgress] = React.useState(0);
+      const [streak, setStreak] = React.useState(0);
+      const [completionTime, setCompletionTime] = React.useState(null);
+
+      // 타이머 관련 state 및 ref
+      const [timeLeft, setTimeLeft] = React.useState(10);
+      const timerRef = React.useRef(null);
+      const [timerEnabled, setTimerEnabled] = React.useState(true);
+      // 틀린 단어를 맞출 때까지 반복 여부 토글 (시작 화면에서 선택)
+      const [repeatUntilCorrect, setRepeatUntilCorrect] = React.useState(false);
+
+      // 정답 선택지를 생성하는 함수
+      const generateOptions = React.useCallback((correctWord) => {
+          const otherWords = fullVocabList
+              .filter(word => word.english !== correctWord)
+              .map(word => word.english);
+          return shuffleArray([correctWord, ...shuffleArray(otherWords).slice(0, 5)]);
+      }, []);
+
+      // 퀴즈 시작 시 30개 랜덤 단어 선택
+      React.useEffect(() => {
+          if (isStarted) {
+              const selectedWords = shuffleArray([...fullVocabList])
+                  .slice(0, 30)
+                  .map(word => ({ ...word }));
+              setVocabList(selectedWords);
+          }
+      }, [isStarted]);
+
+      // 현재 단어가 바뀔 때마다 선택지 업데이트
+      React.useEffect(() => {
+          if (!isComplete && vocabList.length > 0) {
+              setOptions(generateOptions(vocabList[currentWordIndex].english));
+          }
+      }, [currentWordIndex, isComplete, vocabList, generateOptions]);
+
+      // 진행률 업데이트 (총 30문제 대비 맞춘 단어 수)
+      React.useEffect(() => {
+          if (vocabList.length > 0) {
+              const progress = (1 - (vocabList.length / 30)) * 100;
+              setTotalProgress(progress);
+          }
+      }, [vocabList]);
+
+      // 타이머 효과: dependency에 currentWordIndex, vocabList 등을 포함하여 문제 전환 시 타이머 재시작
+      React.useEffect(() => {
+          if (timerEnabled && !isComplete && isStarted) {
+              setTimeLeft(10);
+              if (timerRef.current) {
+                  clearInterval(timerRef.current);
+              }
+              timerRef.current = setInterval(() => {
+                  setTimeLeft(prev => {
+                      if (prev <= 1) {
+                          clearInterval(timerRef.current);
+                          timerRef.current = null;
+                          // 타이머 만료 → 자동 오답 처리
+                          handleAnswer(null);
+                          return 0;
+                      }
+                      return prev - 1;
+                  });
+              }, 1000);
+              return () => {
+                  if (timerRef.current) {
+                      clearInterval(timerRef.current);
+                      timerRef.current = null;
+                  }
+              };
+          }
+      }, [currentWordIndex, vocabList, timerEnabled, isComplete, isStarted]);
+
+      // 정답 처리 함수
+      const handleAnswer = (selectedOption) => {
+          if (timerEnabled && timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+          }
+          const currentWord = vocabList[currentWordIndex];
+          const isTimeout = selectedOption === null;
+          const isCorrect = !isTimeout && (selectedOption === currentWord.english);
+
+          if (isCorrect) {
+              setStreak(prev => prev + 1);
+              setFeedback({ status: 'correct', message: 'Correct!' });
+              // 정답이면 단어 제거
+              const newVocabList = vocabList.filter((_, i) => i !== currentWordIndex);
+              if (newVocabList.length === 0) {
+                  setIsComplete(true);
+                  setCompletionTime(new Date());
+              } else {
+                  setVocabList(newVocabList);
+                  setCurrentWordIndex(currentWordIndex % newVocabList.length);
+              }
+          } else {
+              setStreak(0);
+              const message = isTimeout ? "Time's up! Incorrect." : "Incorrect! Try again.";
+              setFeedback({ status: 'incorrect', message });
+              // 오답 처리: 만약 '틀린 단어 반복' 모드이면 같은 단어를 재출제하도록 함.
+              if (!repeatUntilCorrect) {
+                  const nextIndex = (currentWordIndex + 1) % vocabList.length;
+                  setCurrentWordIndex(nextIndex);
+              } else {
+                  // 같은 단어를 다시 묻기 위해 타이머를 재시작
+                  if (timerEnabled) {
+                      setTimeLeft(10);
+                      if (timerRef.current) clearInterval(timerRef.current);
+                      timerRef.current = setInterval(() => {
+                          setTimeLeft(prev => {
+                              if (prev <= 1) {
+                                  clearInterval(timerRef.current);
+                                  timerRef.current = null;
+                                  handleAnswer(null);
+                                  return 0;
+                              }
+                              return prev - 1;
+                          });
+                      }, 1000);
+                  }
+              }
+          }
+          // 피드백 1초 후 지움
+          setTimeout(() => setFeedback(null), 1000);
+      };
+
+      const handleStart = (e) => {
+          e.preventDefault();
+          if (studentInfo.name.trim()) {
+              setIsStarted(true);
+          }
+      };
+
+      const handleRetry = () => {
+          setIsComplete(false);
+          setCurrentWordIndex(0);
+          setFeedback(null);
+          setTotalProgress(0);
+          setStreak(0);
+          setCompletionTime(null);
+          const selectedWords = shuffleArray([...fullVocabList])
+              .slice(0, 30)
+              .map(word => ({ ...word }));
+          setVocabList(selectedWords);
+      };
+
+      // 시작 화면: 이름 입력 및 옵션 선택 (타이머, 틀린 단어 반복)
+      if (!isStarted) {
+          return (
+              <div className="container">
+                  <h2 className="title">Enter your name to start the quiz</h2>
+                  <form onSubmit={handleStart}>
+                      <input
+                          type="text"
+                          value={studentInfo.name}
+                          onChange={(e) => setStudentInfo({ ...studentInfo, name: e.target.value })}
+                          placeholder="Enter your name"
+                          required
+                      />
+                      <label style={{ marginTop: '10px' }}>
+                          <input
+                              type="checkbox"
+                              checked={timerEnabled}
+                              onChange={(e) => setTimerEnabled(e.target.checked)}
+                              style={{ marginRight: '5px' }}
+                          />
+                          Enable Timer (10 seconds per question)
+                      </label>
+                      <label style={{ marginTop: '10px' }}>
+                          <input
+                              type="checkbox"
+                              checked={repeatUntilCorrect}
+                              onChange={(e) => setRepeatUntilCorrect(e.target.checked)}
+                              style={{ marginRight: '5px' }}
+                          />
+                          Repeat wrong words until answered correctly
+                      </label>
+                      <button type="submit">Start Quiz</button>
+                  </form>
+              </div>
+          );
+      }
+
+      // 완료 화면
+      if (isComplete) {
+          return (
+              <div className="container certificate">
+                  <h1 className="title">Congratulations, {studentInfo.name}!</h1>
+                  <p>You have completed the vocabulary test.</p>
+                  <div className="stats-grid">
+                      <div className="stat-card">
+                          <div>Completion Time</div>
+                          <div>{completionTime ? new Date(completionTime).toLocaleString() : ''}</div>
+                      </div>
+                      <div className="stat-card">
+                          <div>Best Streak</div>
+                          <div>{streak}</div>
+                      </div>
+                      <div className="stat-card">
+                          <div>Success Rate</div>
+                          <div>{Math.round(totalProgress)}%</div>
+                      </div>
+                  </div>
+                  <button className="retry-button" onClick={handleRetry}>
+                      Try Again with New Words!
+                  </button>
+              </div>
+          );
+      }
+
+      return (
+          <div className="container">
+              <div className="header">
+                  <h1 className="title">Vocabulary Test</h1>
+                  <p>Student: {studentInfo.name}</p>
+              </div>
+
+              <div className="progress-container">
+                  <div>Progress: {Math.round(totalProgress)}%</div>
+                  <div className="progress-bar">
+                      <div className="progress-fill" style={{ width: `${totalProgress}%` }} />
+                  </div>
+              </div>
+
+              <StreakDisplay streak={streak} />
+
+              {/* 타이머 표시 */}
+              {timerEnabled && !isComplete && (
+                  <div style={{ textAlign: 'center', marginBottom: '1rem', fontSize: '1.25rem' }}>
+                      Time Left: {timeLeft}s
+                  </div>
+              )}
+
+              <div className="word-container">
+                  <p>
+                      What is the English word for "<strong className="korean-text">
+                          {vocabList && vocabList[currentWordIndex] && vocabList[currentWordIndex].korean}
+                      </strong>"?
+                  </p>
+              </div>
+              <div className="options-grid">
+                  {options.map((option, index) => (
+                      <button
+                          key={index}
+                          onClick={() => handleAnswer(option)}
+                          className="option-button"
+                      >
+                          {option}
+                      </button>
+                  ))}
+              </div>
+
+              {feedback && (
+                  <div className={`feedback ${feedback.status}`}>
+                      {feedback.message}
+                  </div>
+              )}
+          </div>
+      );
+    };
+
+    // 최종 렌더링
+    ReactDOM.render(<VocabTest />, document.getElementById('root'));
+  </script>
+</body>
+</html>
+
